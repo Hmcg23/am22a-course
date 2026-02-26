@@ -1,101 +1,125 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { ArrowRight, BookOpen, CheckCircle, Layers, Sigma } from 'lucide-react';
+import { courseStructure } from '@/data/courseStructure';
+import { DarkModeToggle } from '@/components/layout/DarkModeToggle';
 
-export default function Home() {
+const chapterGradients: Record<string, string> = {
+  '1': 'from-blue-500/10 to-blue-600/5 border-blue-200 dark:border-blue-800',
+  '2': 'from-emerald-500/10 to-emerald-600/5 border-emerald-200 dark:border-emerald-800',
+  '3': 'from-violet-500/10 to-violet-600/5 border-violet-200 dark:border-violet-800',
+  '4': 'from-rose-500/10 to-rose-600/5 border-rose-200 dark:border-rose-800',
+};
+
+const chapterAccent: Record<string, string> = {
+  '1': 'bg-blue-500',
+  '2': 'bg-emerald-500',
+  '3': 'bg-violet-500',
+  '4': 'bg-rose-500',
+};
+
+const chapterText: Record<string, string> = {
+  '1': 'text-blue-600 dark:text-blue-400',
+  '2': 'text-emerald-600 dark:text-emerald-400',
+  '3': 'text-violet-600 dark:text-violet-400',
+  '4': 'text-rose-600 dark:text-rose-400',
+};
+
+export default function HomePage() {
+  const totalSections = courseStructure.chapters.reduce((s, c) => s + c.sections.length, 0);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      {/* Topbar */}
+      <header className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <BookOpen className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-sm">Linear Algebra</span>
+          </div>
+          <DarkModeToggle />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </header>
+
+      {/* Hero */}
+      <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+          <Sigma className="h-4 w-4" />
+          {totalSections} Interactive Sections · 4 Chapters
+        </div>
+        <h1 className="text-5xl font-bold tracking-tight text-foreground mb-4">
+          Linear Algebra
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
+          {courseStructure.subtitle}
+        </p>
+        <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-10">
+          Interactive diagrams. Step-by-step algorithms. Conceptual quizzes.
+          Everything you need to deeply understand linear algebra — not just compute it.
+        </p>
+        <Link
+          href={`/chapter/1/${courseStructure.chapters[0].sections[0].id}`}
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-base hover:bg-primary/90 transition-colors"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Start Learning
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* Feature pills */}
+      <section className="max-w-4xl mx-auto px-6 pb-16">
+        <div className="grid grid-cols-3 gap-4 text-center">
+          {[
+            { icon: Layers, label: 'Interactive Diagrams', desc: '14 live visualizations' },
+            { icon: CheckCircle, label: 'Quizzes', desc: 'Instant feedback' },
+            { icon: Sigma, label: 'Formal Definitions', desc: 'Mathematically precise' },
+          ].map(({ icon: Icon, label, desc }) => (
+            <div key={label} className="p-4 rounded-2xl bg-muted/40 border border-border">
+              <Icon className="h-5 w-5 text-primary mx-auto mb-2" />
+              <p className="font-semibold text-sm">{label}</p>
+              <p className="text-xs text-muted-foreground mt-1">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Chapters */}
+      <section className="max-w-4xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8">Course Chapters</h2>
+        <div className="grid gap-5">
+          {courseStructure.chapters.map((chapter) => (
+            <Link
+              key={chapter.id}
+              href={`/chapter/${chapter.id}`}
+              className={`group block p-6 rounded-2xl border bg-gradient-to-br ${chapterGradients[chapter.id]} hover:shadow-md transition-all duration-200`}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-xl ${chapterAccent[chapter.id]} flex items-center justify-center text-white font-bold text-lg shrink-0`}>
+                  {chapter.id}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-xs font-semibold uppercase tracking-wide ${chapterText[chapter.id]} mb-1`}>
+                    Chapter {chapter.id}
+                  </p>
+                  <h3 className="text-lg font-bold text-foreground mb-1">{chapter.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{chapter.subtitle}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{chapter.description}</p>
+                  <div className="flex items-center gap-3 mt-4">
+                    <span className="text-xs text-muted-foreground bg-background/60 px-2.5 py-1 rounded-full border border-border">
+                      {chapter.sections.length} sections
+                    </span>
+                    <span className="text-xs text-muted-foreground bg-background/60 px-2.5 py-1 rounded-full border border-border">
+                      ~{chapter.sections.reduce((s, sec) => s + sec.estimatedMinutes, 0)} min
+                    </span>
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
