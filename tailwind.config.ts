@@ -13,6 +13,7 @@ const config: Config = {
   	extend: {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
+        serif: ["var(--font-playfair)", ...fontFamily.serif],
         mono: ["var(--font-jetbrains)", ...fontFamily.mono],
       },
   		colors: {

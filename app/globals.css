@@ -12,55 +12,83 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Warm cream background */
+    --background: 75 25% 97%;
+    --foreground: 150 20% 10%;
+
+    /* White cards */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 150 20% 10%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --popover-foreground: 150 20% 10%;
+
+    /* Deep forest green as primary */
+    --primary: 150 42% 18%;
+    --primary-foreground: 75 25% 97%;
+
+    /* Light warm secondary */
+    --secondary: 80 20% 93%;
+    --secondary-foreground: 150 20% 10%;
+
+    --muted: 80 15% 93%;
+    --muted-foreground: 150 10% 42%;
+
+    /* Lime/yellow-green accent */
+    --accent: 76 65% 57%;
+    --accent-foreground: 150 42% 12%;
+
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 80 15% 88%;
+    --input: 80 15% 88%;
+    --ring: 150 42% 18%;
+
+    --chart-1: 150 42% 18%;
+    --chart-2: 76 65% 50%;
     --chart-3: 32 95% 44%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 224 76% 48%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 70% 45%;
+    /* Very dark forest green background */
+    --background: 150 30% 7%;
+    --foreground: 75 20% 93%;
+
+    /* Slightly lighter dark green cards */
+    --card: 150 28% 10%;
+    --card-foreground: 75 20% 93%;
+
+    --popover: 150 28% 10%;
+    --popover-foreground: 75 20% 93%;
+
+    /* Lime as primary in dark mode */
+    --primary: 76 65% 55%;
+    --primary-foreground: 150 42% 10%;
+
+    --secondary: 150 25% 15%;
+    --secondary-foreground: 75 20% 93%;
+
+    --muted: 150 22% 14%;
+    --muted-foreground: 150 10% 55%;
+
+    /* Lime accent stays consistent */
+    --accent: 76 65% 55%;
+    --accent-foreground: 150 42% 10%;
+
+    --destructive: 0 63% 38%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 150 22% 18%;
+    --input: 150 22% 18%;
+    --ring: 76 65% 55%;
+
+    --chart-1: 76 65% 55%;
+    --chart-2: 150 42% 45%;
     --chart-3: 32 95% 55%;
     --chart-4: 280 65% 65%;
     --chart-5: 340 75% 60%;
@@ -73,6 +101,11 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Headings use the editorial serif font */
+  h1, h2, h3 {
+    font-family: var(--font-playfair), Georgia, serif;
   }
 }
 
