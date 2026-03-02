@@ -13,12 +13,14 @@ const config: Config = {
   	extend: {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
-        serif: ["var(--font-playfair)", ...fontFamily.serif],
+        serif: ["var(--font-newsreader)", ...fontFamily.serif],
+        heading: ["var(--font-dm-serif)", "Georgia", "serif"],
         mono: ["var(--font-jetbrains)", ...fontFamily.mono],
       },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+  			sidebar: 'hsl(var(--sidebar))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
@@ -62,6 +64,10 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		boxShadow: {
+  			el1: 'var(--shadow-el1)',
+  			el2: 'var(--shadow-el2)',
   		},
   		keyframes: {
   			'accordion-down': {

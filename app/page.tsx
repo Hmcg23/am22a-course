@@ -8,6 +8,8 @@ const chapterGradients: Record<string, string> = {
   '2': 'from-emerald-500/10 to-emerald-600/5 border-emerald-200 dark:border-emerald-800',
   '3': 'from-violet-500/10 to-violet-600/5 border-violet-200 dark:border-violet-800',
   '4': 'from-rose-500/10 to-rose-600/5 border-rose-200 dark:border-rose-800',
+  '5': 'from-amber-500/10 to-amber-600/5 border-amber-200 dark:border-amber-800',
+  '6': 'from-cyan-500/10 to-cyan-600/5 border-cyan-200 dark:border-cyan-800',
 };
 
 const chapterAccent: Record<string, string> = {
@@ -15,6 +17,8 @@ const chapterAccent: Record<string, string> = {
   '2': 'bg-emerald-500',
   '3': 'bg-violet-500',
   '4': 'bg-rose-500',
+  '5': 'bg-amber-500',
+  '6': 'bg-cyan-500',
 };
 
 const chapterText: Record<string, string> = {
@@ -22,6 +26,8 @@ const chapterText: Record<string, string> = {
   '2': 'text-emerald-600 dark:text-emerald-400',
   '3': 'text-violet-600 dark:text-violet-400',
   '4': 'text-rose-600 dark:text-rose-400',
+  '5': 'text-amber-600 dark:text-amber-400',
+  '6': 'text-cyan-600 dark:text-cyan-400',
 };
 
 export default function HomePage() {
@@ -36,7 +42,7 @@ export default function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <BookOpen className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-sm">Linear Algebra</span>
+            <span className="font-medium text-sm">Linear Algebra</span>
           </div>
           <DarkModeToggle />
         </div>
@@ -46,9 +52,9 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
           <Sigma className="h-4 w-4" />
-          {totalSections} Interactive Sections · 4 Chapters
+          {totalSections} Interactive Sections · 6 Chapters
         </div>
-        <h1 className="text-5xl font-bold tracking-tight text-foreground mb-4">
+        <h1 className="text-5xl font-light tracking-tight text-foreground mb-4">
           Linear Algebra
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
@@ -60,7 +66,7 @@ export default function HomePage() {
         </p>
         <Link
           href={`/chapter/1/${courseStructure.chapters[0].sections[0].id}`}
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-base hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium text-base hover:bg-primary/90 transition-colors"
         >
           Start Learning
           <ArrowRight className="h-4 w-4" />
@@ -75,9 +81,9 @@ export default function HomePage() {
             { icon: CheckCircle, label: 'Quizzes', desc: 'Instant feedback' },
             { icon: Sigma, label: 'Formal Definitions', desc: 'Mathematically precise' },
           ].map(({ icon: Icon, label, desc }) => (
-            <div key={label} className="p-4 rounded-2xl bg-muted/40 border border-border">
+            <div key={label} className="p-4 rounded-lg bg-muted/40 border border-border">
               <Icon className="h-5 w-5 text-primary mx-auto mb-2" />
-              <p className="font-semibold text-sm">{label}</p>
+              <p className="font-normal text-sm">{label}</p>
               <p className="text-xs text-muted-foreground mt-1">{desc}</p>
             </div>
           ))}
@@ -86,23 +92,23 @@ export default function HomePage() {
 
       {/* Chapters */}
       <section className="max-w-4xl mx-auto px-6 pb-24">
-        <h2 className="text-2xl font-bold mb-8">Course Chapters</h2>
+        <h2 className="text-2xl font-light mb-8">Course Chapters</h2>
         <div className="grid gap-5">
           {courseStructure.chapters.map((chapter) => (
             <Link
               key={chapter.id}
               href={`/chapter/${chapter.id}`}
-              className={`group block p-6 rounded-2xl border bg-gradient-to-br ${chapterGradients[chapter.id]} hover:shadow-md transition-all duration-200`}
+              className={`group block p-6 rounded-lg border bg-gradient-to-br ${chapterGradients[chapter.id]} hover:shadow-el1 transition-all duration-100`}
             >
               <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-xl ${chapterAccent[chapter.id]} flex items-center justify-center text-white font-bold text-lg shrink-0`}>
+                <div className={`w-10 h-10 rounded-xl ${chapterAccent[chapter.id]} flex items-center justify-center text-white font-normal text-lg shrink-0`}>
                   {chapter.id}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-xs font-semibold uppercase tracking-wide ${chapterText[chapter.id]} mb-1`}>
+                  <p className={`text-xs font-medium uppercase tracking-wide ${chapterText[chapter.id]} mb-1`}>
                     Chapter {chapter.id}
                   </p>
-                  <h3 className="text-lg font-bold text-foreground mb-1">{chapter.title}</h3>
+                  <h3 className="text-lg font-normal text-foreground mb-1">{chapter.title}</h3>
                   <p className="text-sm text-muted-foreground mb-3">{chapter.subtitle}</p>
                   <p className="text-sm text-muted-foreground leading-relaxed">{chapter.description}</p>
                   <div className="flex items-center gap-3 mt-4">

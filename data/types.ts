@@ -17,7 +17,10 @@ export type DiagramType =
   | 'MatrixProductAnimator'
   | 'InvertibleTheoremExplorer'
   | 'LUDecompositionAnimator'
-  | 'TransformationComposition';
+  | 'TransformationComposition'
+  | 'TransposeVisualizer'
+  | 'DotProductAngle'
+  | 'OrthogonalProjection2D';
 
 export interface LineIntersectionSystem {
   label: string;
@@ -54,6 +57,9 @@ export interface DiagramPropsMap {
   InvertibleTheoremExplorer: { matrixSize?: 2 | 3 };
   LUDecompositionAnimator: { matrix?: number[][] };
   TransformationComposition: { matrixA?: number[][]; matrixB?: number[][] };
+  TransposeVisualizer: { initialMatrix?: number[][] };
+  DotProductAngle: Record<string, never>;
+  OrthogonalProjection2D: Record<string, never>;
 }
 
 export type DiagramConfig = {

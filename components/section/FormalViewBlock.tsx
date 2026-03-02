@@ -1,8 +1,8 @@
 'use client';
-import { InlineMath, BlockMath } from 'react-katex';
 import { BookMarked, Lightbulb, FlaskConical, ChevronRight } from 'lucide-react';
 import type { FormalBlock, FormalBlockType } from '@/data/types';
 import { cn } from '@/lib/utils';
+import { renderMathText } from './MathText';
 
 const typeConfig: Record<FormalBlockType, {
   label: string;
@@ -55,52 +55,25 @@ const typeConfig: Record<FormalBlockType, {
   },
 };
 
-function renderMathContent(content: string) {
-  // Split on $$ ... $$ for block math, $ ... $ for inline
-  const parts = content.split(/(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('$$') && part.endsWith('$$')) {
-      const math = part.slice(2, -2).trim();
-      return <BlockMath key={i} math={math} />;
-    }
-    if (part.startsWith('$') && part.endsWith('$') && part.length > 2) {
-      const math = part.slice(1, -1);
-      return <InlineMath key={i} math={math} />;
-    }
-    // Render bold **...** within text
-    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
-    return (
-      <span key={i}>
-        {boldParts.map((bp, j) => {
-          if (bp.startsWith('**') && bp.endsWith('**')) {
-            return <strong key={j} className="font-semibold">{bp.slice(2, -2)}</strong>;
-          }
-          return <span key={j}>{bp}</span>;
-        })}
-      </span>
-    );
-  });
-}
-
 function FormalBlockCard({ block }: { block: FormalBlock }) {
   const config = typeConfig[block.type] || typeConfig.remark;
   const Icon = config.icon;
 
   return (
-    <div className={cn('rounded-2xl border p-5', config.bg, config.border)}>
+    <div className={cn('rounded-lg border p-5', config.bg, config.border)}>
       <div className="flex items-center gap-2 mb-3">
         <Icon className={cn('h-4 w-4', config.labelColor)} />
-        <span className={cn('text-xs font-semibold uppercase tracking-wider', config.labelColor)}>
+        <span className={cn('text-xs font-medium uppercase tracking-wider', config.labelColor)}>
           {block.label}
           {block.title && ` — ${block.title}`}
         </span>
       </div>
       <div className="text-sm leading-relaxed text-foreground space-y-1 font-mono">
-        {renderMathContent(block.content)}
+        {renderMathText(block.content)}
       </div>
       {block.note && (
         <p className="mt-3 text-xs text-muted-foreground italic border-t border-current/10 pt-3">
-          {block.note}
+          {renderMathText(block.note)}
         </p>
       )}
     </div>
@@ -112,7 +85,7 @@ export function FormalViewBlock({ blocks }: { blocks: FormalBlock[] }) {
 
   return (
     <div>
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+      <h3 className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         <span className="h-px flex-1 bg-border" />
         Formal View
         <span className="h-px flex-1 bg-border" />

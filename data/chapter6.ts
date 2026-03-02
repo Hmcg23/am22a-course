@@ -1,0 +1,717 @@
+import type { ChapterMeta } from './types';
+
+const chapter6: ChapterMeta = {
+  id: '6',
+  title: 'Dot Products, Orthogonality, and Projections',
+  subtitle: 'Measuring Angles, Length, and Finding the Closest Vector',
+  description: 'Build a complete theory of measurement in linear algebra — dot products, lengths, angles, and orthogonality — then use orthogonal projection to solve the best approximation problem.',
+  color: 'cyan',
+  accentHex: '#06B6D4',
+  sections: [
+    {
+      id: '6-1',
+      chapterId: '6',
+      sectionNumber: '6.1',
+      title: 'The Dot Product',
+      estimatedMinutes: 10,
+      plainEnglish: [
+        'The **dot product** of two vectors $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$ is the sum of their entry-wise products: $\\mathbf{u} \\cdot \\mathbf{v} = u_1 v_1 + u_2 v_2 + \\cdots + u_m v_m$. The result is a single real number — not a vector.',
+        'Using matrix notation, the dot product is simply a matrix product: $\\mathbf{u} \\cdot \\mathbf{v} = \\mathbf{u}^t \\mathbf{v}$. This is one pass of the "two-finger rule" — exactly as we compute any matrix-vector product, but the output is $1 \\times 1$.',
+        'The dot product captures how much two vectors "agree in direction." When both vectors point the same way, the dot product is large and positive. When they point in opposite directions, it is large and negative. When they are perpendicular, it is exactly zero.',
+      ],
+      formalView: [
+        {
+          type: 'definition',
+          label: 'Definition 6.1',
+          title: 'Dot Product',
+          content: 'Let $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$. Their **dot product** is $$\\mathbf{u} \\cdot \\mathbf{v} := \\sum_{i=1}^m u_i v_i = \\mathbf{u}^t \\mathbf{v}.$$',
+        },
+        {
+          type: 'theorem',
+          label: 'Theorem 6.2',
+          title: 'Properties of the Dot Product',
+          content: 'For all $\\mathbf{u}, \\mathbf{v}, \\mathbf{w} \\in \\mathbb{R}^m$ and $c \\in \\mathbb{R}$:\\begin{enumerate} \\item $(\\mathbf{u} + \\mathbf{v}) \\cdot \\mathbf{w} = \\mathbf{u} \\cdot \\mathbf{w} + \\mathbf{v} \\cdot \\mathbf{w}$ \\item $(c\\mathbf{u}) \\cdot \\mathbf{v} = c(\\mathbf{u} \\cdot \\mathbf{v})$ \\item $\\mathbf{u} \\cdot \\mathbf{v} = \\mathbf{v} \\cdot \\mathbf{u}$ (commutativity) \\item $\\mathbf{u} \\cdot \\mathbf{u} \\geq 0$, with equality iff $\\mathbf{u} = \\mathbf{0}$ (positivity) \\end{enumerate}',
+          note: 'Commutativity also gives linearity in the second argument: $\\mathbf{u} \\cdot (\\mathbf{v} + c\\mathbf{w}) = \\mathbf{u} \\cdot \\mathbf{v} + c(\\mathbf{u} \\cdot \\mathbf{w})$.',
+        },
+      ],
+      diagram: {
+        type: 'DotProductAngle',
+        props: {},
+      },
+      whyItMatters: {
+        context: 'The dot product is the foundation of all geometric concepts in linear algebra — length, angle, and projection all derive from it.',
+        applications: [
+          'Recommendation systems compute dot products between user and item vectors to score how well a movie matches a viewer\'s preferences',
+          'In physics, work done by a force $\\mathbf{F}$ along displacement $\\mathbf{d}$ is the dot product $\\mathbf{F} \\cdot \\mathbf{d}$',
+          'Cosine similarity — the backbone of search engines and NLP embeddings — is a normalized dot product',
+          'Convolutional neural networks compute dot products between filter weights and input patches at every position',
+        ],
+      },
+      resources: [
+        {
+          title: 'Dot products and duality',
+          channel: '3Blue1Brown',
+          url: 'https://www.youtube.com/watch?v=LyGKycYT2v0',
+          durationMinutes: 14,
+          description: 'The deep geometric and algebraic meaning of the dot product, including its connection to linear maps.',
+        },
+        {
+          title: 'Dot product and angle between vectors',
+          channel: 'Khan Academy',
+          url: 'https://www.youtube.com/watch?v=WNuIhXo39_k',
+          durationMinutes: 12,
+          description: 'Step-by-step computation of dot products and deriving the angle formula.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-1-q1',
+          type: 'multiple-choice',
+          question: 'Compute $\\mathbf{u} \\cdot \\mathbf{v}$ for $\\mathbf{u} = (1, -2, 3)$ and $\\mathbf{v} = (4, 0, -1)$.',
+          options: ['$7$', '$-7$', '$1$', '$11$'],
+          correctAnswer: 2,
+          explanation: '$\\mathbf{u} \\cdot \\mathbf{v} = (1)(4) + (-2)(0) + (3)(-1) = 4 + 0 - 3 = 1$.',
+        },
+        {
+          id: '6-1-q2',
+          type: 'true-false',
+          question: 'The dot product is commutative: $\\mathbf{u} \\cdot \\mathbf{v} = \\mathbf{v} \\cdot \\mathbf{u}$ for all vectors.',
+          correctAnswer: true,
+          explanation: '$\\mathbf{u} \\cdot \\mathbf{v} = \\sum_i u_i v_i = \\sum_i v_i u_i = \\mathbf{v} \\cdot \\mathbf{u}$. The sum of products is order-independent.',
+        },
+        {
+          id: '6-1-q3',
+          type: 'multiple-choice',
+          question: 'If $\\mathbf{v} \\cdot \\mathbf{v} = 0$, what can you conclude?',
+          options: ['$\\|\\mathbf{v}\\| = 1$', '$\\mathbf{v} = \\mathbf{0}$', '$\\mathbf{v}$ is a unit vector', '$\\mathbf{v}$ is orthogonal to itself'],
+          correctAnswer: 1,
+          explanation: 'By the positivity property, $\\mathbf{v} \\cdot \\mathbf{v} \\geq 0$ with equality iff $\\mathbf{v} = \\mathbf{0}$.',
+        },
+      ],
+      commonMistakes: [
+        'Treating the dot product as a vector operation — $\\mathbf{u} \\cdot \\mathbf{v}$ is a scalar, not a vector.',
+        'Confusing $\\mathbf{u}^t \\mathbf{v}$ (a scalar) with $\\mathbf{u} \\mathbf{v}^t$ (an $m \\times m$ outer product matrix).',
+        'Assuming $\\mathbf{u} \\cdot \\mathbf{v} > 0$ means $\\mathbf{u}$ and $\\mathbf{v}$ point in the same direction — they just point within 90° of each other.',
+      ],
+    },
+    {
+      id: '6-2',
+      chapterId: '6',
+      sectionNumber: '6.2',
+      title: 'Length and Distance',
+      estimatedMinutes: 8,
+      plainEnglish: [
+        'The **length** (or norm) of a vector $\\mathbf{v}$ is the square root of its dot product with itself: $\\|\\mathbf{v}\\| = \\sqrt{\\mathbf{v} \\cdot \\mathbf{v}} = \\sqrt{v_1^2 + \\cdots + v_m^2}$. This matches the familiar Pythagorean formula for distance from the origin.',
+        'Scaling a vector scales its length proportionally: $\\|c\\mathbf{v}\\| = |c| \\cdot \\|\\mathbf{v}\\|$. A vector with length 1 is called a **unit vector**. Given any nonzero vector $\\mathbf{v}$, dividing by its length gives a unit vector in the same direction: $\\hat{\\mathbf{v}} = \\mathbf{v} / \\|\\mathbf{v}\\|$. This is called **normalization**.',
+        'The **distance** between two vectors $\\mathbf{u}$ and $\\mathbf{v}$ is the length of their difference: $\\text{Dist}(\\mathbf{u}, \\mathbf{v}) = \\|\\mathbf{u} - \\mathbf{v}\\|$. Think of $\\mathbf{u}$ and $\\mathbf{v}$ as points, and the vector $\\mathbf{u} - \\mathbf{v}$ as the arrow from $\\mathbf{v}$ to $\\mathbf{u}$.',
+      ],
+      formalView: [
+        {
+          type: 'definition',
+          label: 'Definition 6.3',
+          title: 'Length (Norm)',
+          content: 'For $\\mathbf{v} \\in \\mathbb{R}^m$, its **length** is $\\|\\mathbf{v}\\| := \\sqrt{\\mathbf{v} \\cdot \\mathbf{v}} = \\sqrt{\\sum_i v_i^2}$. The squared length is $\\|\\mathbf{v}\\|^2 = \\mathbf{v}^t \\mathbf{v}$. If $\\|\\mathbf{v}\\| = 1$, we call $\\mathbf{v}$ a **unit vector**, sometimes written $\\hat{\\mathbf{v}}$.',
+        },
+        {
+          type: 'definition',
+          label: 'Definition 6.4',
+          title: 'Distance',
+          content: 'The **distance** between $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$ is $$\\text{Dist}(\\mathbf{u}, \\mathbf{v}) := \\|\\mathbf{u} - \\mathbf{v}\\| = \\sqrt{\\sum_i (u_i - v_i)^2}.$$',
+        },
+      ],
+      whyItMatters: {
+        context: 'Norms and distances give geometry its measurement capabilities — they let us say what "close" and "far" mean.',
+        applications: [
+          'K-nearest neighbors classifiers assign a class to a test point based on the Euclidean distances to training examples',
+          'Image compression measures reconstruction error by the squared distance $\\|\\mathbf{x}_{\\text{original}} - \\mathbf{x}_{\\text{compressed}}\\|^2$',
+          'GPS and sensor fusion use norm minimization to find the most likely position given noisy measurements',
+          'The Frobenius norm of a matrix — the length of all entries as one long vector — measures how far a matrix is from zero',
+        ],
+      },
+      resources: [
+        {
+          title: 'Vector magnitude and normalization',
+          channel: 'Khan Academy',
+          url: 'https://www.youtube.com/watch?v=lXo4-TcBE2Y',
+          durationMinutes: 8,
+          description: 'Computing vector length and normalizing to unit length.',
+        },
+        {
+          title: 'Norms and distance in linear algebra',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=YzZUIYRCE38',
+          durationMinutes: 47,
+          description: 'Strang introduces norms and distance in the context of orthogonality.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-2-q1',
+          type: 'multiple-choice',
+          question: 'What is $\\|\\mathbf{v}\\|$ for $\\mathbf{v} = (3, -4)$?',
+          options: ['$1$', '$5$', '$7$', '$25$'],
+          correctAnswer: 1,
+          explanation: '$\\|\\mathbf{v}\\| = \\sqrt{3^2 + (-4)^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$.',
+        },
+        {
+          id: '6-2-q2',
+          type: 'short-answer',
+          question: 'If $\\|\\mathbf{v}\\| = 4$, what is $\\|3\\mathbf{v}\\|$?',
+          correctAnswer: '12',
+          acceptableAnswers: ['12'],
+          explanation: '$\\|3\\mathbf{v}\\| = |3| \\cdot \\|\\mathbf{v}\\| = 3 \\times 4 = 12$.',
+        },
+      ],
+      commonMistakes: [
+        'Computing $\\|\\mathbf{u} + \\mathbf{v}\\|$ as $\\|\\mathbf{u}\\| + \\|\\mathbf{v}\\|$ — the triangle inequality says $\\|\\mathbf{u} + \\mathbf{v}\\| \\leq \\|\\mathbf{u}\\| + \\|\\mathbf{v}\\|$, with equality only when they point in the same direction.',
+        'Forgetting to take the square root — $\\mathbf{v} \\cdot \\mathbf{v}$ is the squared length, not the length.',
+        'Normalizing the zero vector — division by $\\|\\mathbf{0}\\| = 0$ is undefined.',
+      ],
+    },
+    {
+      id: '6-3',
+      chapterId: '6',
+      sectionNumber: '6.3',
+      title: 'Angles and Orthogonality',
+      estimatedMinutes: 10,
+      plainEnglish: [
+        'Given two nonzero vectors, the **angle** between them satisfies $\\cos \\theta = (\\mathbf{u} \\cdot \\mathbf{v}) / (\\|\\mathbf{u}\\| \\cdot \\|\\mathbf{v}\\|)$. The Cauchy-Schwarz inequality guarantees this ratio always lies in $[-1, 1]$, so $\\cos^{-1}$ is well-defined. The angle is always in $[0°, 180°]$.',
+        'The most important special case is $\\theta = 90°$ — when $\\cos \\theta = 0$, i.e., when $\\mathbf{u} \\cdot \\mathbf{v} = 0$. We say $\\mathbf{u}$ and $\\mathbf{v}$ are **orthogonal** and write $\\mathbf{u} \\perp \\mathbf{v}$. Orthogonality generalizes the familiar notion of perpendicularity to all dimensions.',
+        'Note: orthogonality includes the case where one of the vectors is zero, since $\\mathbf{0} \\cdot \\mathbf{v} = 0$ for all $\\mathbf{v}$.',
+      ],
+      formalView: [
+        {
+          type: 'definition',
+          label: 'Definition 6.5',
+          title: 'Angle Between Vectors',
+          content: 'For nonzero $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$, the **angle** between them is $$\\theta(\\mathbf{u}, \\mathbf{v}) := \\cos^{-1}\\!\\left(\\frac{\\mathbf{u} \\cdot \\mathbf{v}}{\\|\\mathbf{u}\\|\\,\\|\\mathbf{v}\\|}\\right) \\in [0, \\pi].$$',
+        },
+        {
+          type: 'definition',
+          label: 'Definition 6.6',
+          title: 'Orthogonality',
+          content: 'Vectors $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$ are **orthogonal**, written $\\mathbf{u} \\perp \\mathbf{v}$, if $\\mathbf{u} \\cdot \\mathbf{v} = 0$.',
+        },
+        {
+          type: 'example',
+          label: 'Example 6.7',
+          content: 'In $\\mathbb{R}^2$: $(1,1) \\perp (1,-1)$ since $(1)(1) + (1)(-1) = 0$. In $\\mathbb{R}^3$: $(1,0,0) \\perp (0,1,0)$ and $(0,0,1)$ — the standard basis vectors are mutually orthogonal.',
+        },
+      ],
+      diagram: {
+        type: 'DotProductAngle',
+        props: {},
+      },
+      whyItMatters: {
+        context: 'Orthogonality is the central organizing principle of applied linear algebra.',
+        applications: [
+          'Fourier analysis decomposes signals into orthogonal sine and cosine waves — orthogonality ensures no frequency "contaminates" another',
+          'In statistics, uncorrelated random variables are nearly the same concept as orthogonal vectors',
+          'PCA (principal component analysis) finds orthogonal directions of maximum variance in high-dimensional data',
+          'Error-correcting codes exploit orthogonality: a transmitted signal lies in one subspace, and errors lie in the orthogonal complement',
+        ],
+      },
+      resources: [
+        {
+          title: 'Dot products and angles',
+          channel: '3Blue1Brown',
+          url: 'https://www.youtube.com/watch?v=LyGKycYT2v0',
+          durationMinutes: 14,
+          description: 'Geometric interpretation of the dot product and its connection to angles.',
+        },
+        {
+          title: 'Orthogonal vectors and subspaces',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=YzZUIYRCE38',
+          durationMinutes: 47,
+          description: 'Strang on orthogonality as the foundation of projections and least squares.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-3-q1',
+          type: 'multiple-choice',
+          question: 'Which pair of vectors is orthogonal?',
+          options: ['$(1,2)$ and $(2,1)$', '$(1,2)$ and $(2,-1)$', '$(1,2)$ and $(1,-2)$', '$(1,2)$ and $(-1,2)$'],
+          correctAnswer: 1,
+          explanation: '$(1,2) \\cdot (2,-1) = 2 - 2 = 0$. The others: $(1,2)\\cdot(2,1)=4$, $(1,2)\\cdot(1,-2)=-3$, $(1,2)\\cdot(-1,2)=3$.',
+        },
+        {
+          id: '6-3-q2',
+          type: 'true-false',
+          question: 'The zero vector is orthogonal to every vector.',
+          correctAnswer: true,
+          explanation: '$\\mathbf{0} \\cdot \\mathbf{v} = 0$ for every $\\mathbf{v}$, so $\\mathbf{0} \\perp \\mathbf{v}$ by definition.',
+        },
+      ],
+      commonMistakes: [
+        'Thinking perpendicular means $\\mathbf{u} + \\mathbf{v} = 0$ — orthogonality is about the dot product, not the sum.',
+        'Confusing negative dot product (obtuse angle) with orthogonal (zero dot product) — orthogonal means exactly zero.',
+        'Assuming $\\mathbf{u} \\perp \\mathbf{v}$ and $\\mathbf{u} \\perp \\mathbf{w}$ implies $\\mathbf{v} \\perp \\mathbf{w}$ — orthogonality to a fixed vector does not force two vectors to be orthogonal to each other.',
+      ],
+    },
+    {
+      id: '6-4',
+      chapterId: '6',
+      sectionNumber: '6.4',
+      title: 'The Pythagorean Theorem',
+      estimatedMinutes: 7,
+      plainEnglish: [
+        'The classical Pythagorean theorem says that for a right triangle with legs $a, b$ and hypotenuse $c$, we have $a^2 + b^2 = c^2$. The vector version says exactly the same thing: if $\\mathbf{u} \\perp \\mathbf{v}$, then $\\|\\mathbf{u} + \\mathbf{v}\\|^2 = \\|\\mathbf{u}\\|^2 + \\|\\mathbf{v}\\|^2$.',
+        'The proof is a direct computation using the dot product. Expand $\\|\\mathbf{u} + \\mathbf{v}\\|^2 = (\\mathbf{u} + \\mathbf{v}) \\cdot (\\mathbf{u} + \\mathbf{v}) = \\mathbf{u}\\cdot\\mathbf{u} + 2\\mathbf{u}\\cdot\\mathbf{v} + \\mathbf{v}\\cdot\\mathbf{v}$. The cross-term $2\\mathbf{u} \\cdot \\mathbf{v}$ vanishes exactly when $\\mathbf{u} \\perp \\mathbf{v}$.',
+        'This result holds in all dimensions — not just 2D. Whenever two vectors are orthogonal, the squared length of their sum equals the sum of their squared lengths. This is the key behind many decompositions and error bounds.',
+      ],
+      formalView: [
+        {
+          type: 'theorem',
+          label: 'Theorem 6.8',
+          title: 'Pythagorean Theorem',
+          content: 'Vectors $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$ are orthogonal if and only if $$\\|\\mathbf{u} + \\mathbf{v}\\|^2 = \\|\\mathbf{u}\\|^2 + \\|\\mathbf{v}\\|^2.$$',
+          note: 'Proof: $\\|\\mathbf{u}+\\mathbf{v}\\|^2 = (\\mathbf{u}+\\mathbf{v})\\cdot(\\mathbf{u}+\\mathbf{v}) = \\|\\mathbf{u}\\|^2 + 2\\,\\mathbf{u}\\cdot\\mathbf{v} + \\|\\mathbf{v}\\|^2$. The $2\\mathbf{u}\\cdot\\mathbf{v}$ term vanishes iff $\\mathbf{u} \\perp \\mathbf{v}$.',
+        },
+      ],
+      whyItMatters: {
+        context: 'The Pythagorean theorem is used to bound errors and measure approximation quality throughout applied mathematics.',
+        applications: [
+          'Parseval\'s theorem in signal processing is the Pythagorean theorem for Fourier components — total power equals sum of powers at each frequency',
+          'In the best approximation theorem, the Pythagorean theorem proves that the projection is strictly closer than any other vector in the subspace',
+          'Variance decomposition in statistics ($R^2$) follows from the Pythagorean theorem applied to residuals and fitted values',
+        ],
+      },
+      resources: [
+        {
+          title: 'Proof of the Pythagorean theorem via dot products',
+          channel: 'Khan Academy',
+          url: 'https://www.youtube.com/watch?v=WNuIhXo39_k',
+          durationMinutes: 15,
+          description: 'The algebraic and geometric proof of Pythagoras using dot products.',
+        },
+        {
+          title: 'Orthogonal complements and projections',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=Y_Ac6KiQ1t0',
+          durationMinutes: 45,
+          description: 'Strang on projections and the Pythagorean structure of decompositions.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-4-q1',
+          type: 'true-false',
+          question: 'For any two vectors $\\mathbf{u}$ and $\\mathbf{v}$: $\\|\\mathbf{u} + \\mathbf{v}\\|^2 = \\|\\mathbf{u}\\|^2 + \\|\\mathbf{v}\\|^2$.',
+          correctAnswer: false,
+          explanation: 'This equality holds only when $\\mathbf{u} \\perp \\mathbf{v}$. In general, $\\|\\mathbf{u}+\\mathbf{v}\\|^2 = \\|\\mathbf{u}\\|^2 + 2\\mathbf{u}\\cdot\\mathbf{v} + \\|\\mathbf{v}\\|^2$, and the cross-term is nonzero when the vectors are not orthogonal.',
+        },
+        {
+          id: '6-4-q2',
+          type: 'multiple-choice',
+          question: 'If $\\mathbf{u} \\perp \\mathbf{v}$, $\\|\\mathbf{u}\\| = 3$, and $\\|\\mathbf{v}\\| = 4$, what is $\\|\\mathbf{u} + \\mathbf{v}\\|$?',
+          options: ['$7$', '$5$', '$12$', '$25$'],
+          correctAnswer: 1,
+          explanation: 'By the Pythagorean theorem, $\\|\\mathbf{u}+\\mathbf{v}\\|^2 = 9 + 16 = 25$, so $\\|\\mathbf{u}+\\mathbf{v}\\| = 5$.',
+        },
+      ],
+      commonMistakes: [
+        'Assuming $\\|\\mathbf{u} + \\mathbf{v}\\|^2 = \\|\\mathbf{u}\\|^2 + \\|\\mathbf{v}\\|^2$ always — this only holds when $\\mathbf{u} \\perp \\mathbf{v}$.',
+        'Forgetting the cross term when expanding $\\|\\mathbf{u} + \\mathbf{v}\\|^2$ — always expand using the dot product, not treating it like ordinary algebra.',
+      ],
+    },
+    {
+      id: '6-5',
+      chapterId: '6',
+      sectionNumber: '6.5',
+      title: 'Orthogonal Complement',
+      estimatedMinutes: 10,
+      plainEnglish: [
+        'Given a subspace $V$ of $\\mathbb{R}^m$, its **orthogonal complement** $V^\\perp$ is the set of all vectors in $\\mathbb{R}^m$ that are orthogonal to every vector in $V$. It is the collection of all "directions perpendicular to $V$."',
+        'In $\\mathbb{R}^3$, the complement of a line through the origin is a plane, and vice versa. The dimensions add up: $\\dim(V) + \\dim(V^\\perp) = m$. And taking the complement twice returns the original: $(V^\\perp)^\\perp = V$.',
+        'A vector $\\mathbf{n}$ orthogonal to every vector in a hyperplane $V$ is called a **normal vector** to $V$. If the hyperplane is defined by the equation $\\mathbf{n}^t \\mathbf{x} = b$, then $\\mathbf{n}$ is a normal vector. Normal vectors are the key to describing hyperplanes without choosing a basis.',
+      ],
+      formalView: [
+        {
+          type: 'definition',
+          label: 'Definition 6.9',
+          title: 'Orthogonal Complement',
+          content: 'Let $V$ be a subspace of $\\mathbb{R}^m$. Its **orthogonal complement** is $$V^\\perp := \\{\\mathbf{z} \\in \\mathbb{R}^m : \\mathbf{z} \\cdot \\mathbf{v} = 0 \\text{ for all } \\mathbf{v} \\in V\\}.$$',
+        },
+        {
+          type: 'theorem',
+          label: 'Theorem 6.10',
+          content: 'Let $V$ be an $n$-dimensional subspace of $\\mathbb{R}^m$ with basis $\\{\\mathbf{a}_1, \\ldots, \\mathbf{a}_n\\}$:\\begin{enumerate} \\item $V^\\perp$ is a subspace of $\\mathbb{R}^m$. \\item $V \\cap V^\\perp = \\{\\mathbf{0}\\}$. \\item $\\mathbf{z} \\in V^\\perp$ iff $\\mathbf{z} \\cdot \\mathbf{a}_i = 0$ for each basis vector $\\mathbf{a}_i$. \\item $\\dim(V^\\perp) = m - n$ and $(V^\\perp)^\\perp = V$. \\end{enumerate}',
+          note: 'Property 3 is computationally useful: you only need to check orthogonality against a basis, not every vector in V.',
+        },
+      ],
+      whyItMatters: {
+        context: 'Orthogonal complements decompose space into complementary pieces — a fundamental tool across all of applied mathematics.',
+        applications: [
+          'The four fundamental subspaces of a matrix (column space, null space, row space, left null space) come in orthogonal complement pairs',
+          'In quantum mechanics, the state space decomposes as $V \\oplus V^\\perp$; measuring collapses a state to one of these pieces',
+          'Noise cancellation in audio works by projecting a signal onto the subspace orthogonal to known noise patterns',
+        ],
+      },
+      resources: [
+        {
+          title: 'The four fundamental subspaces',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=nHlE7EgJFds',
+          durationMinutes: 49,
+          description: 'Strang\'s famous lecture on how row space, column space, null space and left null space relate via orthogonal complements.',
+        },
+        {
+          title: 'Orthogonal complement',
+          channel: 'Khan Academy',
+          url: 'https://www.youtube.com/watch?v=QOTjdgmNqlg',
+          durationMinutes: 14,
+          description: 'Clear explanation of orthogonal complements with examples.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-5-q1',
+          type: 'multiple-choice',
+          question: 'If $V$ is a 2-dimensional subspace of $\\mathbb{R}^5$, what is $\\dim(V^\\perp)$?',
+          options: ['$2$', '$3$', '$4$', '$5$'],
+          correctAnswer: 1,
+          explanation: '$\\dim(V^\\perp) = m - \\dim(V) = 5 - 2 = 3$.',
+        },
+        {
+          id: '6-5-q2',
+          type: 'true-false',
+          question: 'If $\\mathbf{z}$ is orthogonal to every basis vector of $V$, then $\\mathbf{z} \\in V^\\perp$.',
+          correctAnswer: true,
+          explanation: 'Any vector in $V$ is a linear combination of the basis vectors. By linearity of the dot product, $\\mathbf{z} \\cdot \\mathbf{v} = 0$ for all $\\mathbf{v} \\in V$.',
+        },
+      ],
+      commonMistakes: [
+        'Thinking $V^\\perp$ is just one vector — the orthogonal complement is a full subspace, usually of positive dimension.',
+        'Forgetting $V \\cap V^\\perp = \\{\\mathbf{0}\\}$ — a nonzero vector cannot be orthogonal to itself (by positivity of the dot product).',
+        'Confusing orthogonal complement with the set complement — $V^\\perp$ is a subspace, not "everything outside $V$."',
+      ],
+    },
+    {
+      id: '6-6',
+      chapterId: '6',
+      sectionNumber: '6.6',
+      title: 'Orthonormal Sets and Matrices',
+      estimatedMinutes: 10,
+      plainEnglish: [
+        'A set of vectors $\\{\\mathbf{u}_1, \\ldots, \\mathbf{u}_n\\}$ is **orthonormal** if every vector is a unit vector and every pair is orthogonal: $\\mathbf{u}_i \\cdot \\mathbf{u}_j = 0$ for $i \\neq j$ and $\\mathbf{u}_i \\cdot \\mathbf{u}_i = 1$. The standard basis vectors $\\mathbf{e}_1, \\ldots, \\mathbf{e}_m$ are the simplest example.',
+        'If we stack $n$ orthonormal vectors in $\\mathbb{R}^m$ as the columns of a matrix $U$, then $U^t U = I_n$. The $ij$-entry of $U^t U$ is $\\mathbf{u}_i \\cdot \\mathbf{u}_j$, which is $1$ when $i = j$ and $0$ otherwise. This means $U^t$ is the **left inverse** of $U$.',
+        'Because $U^t U = I_n$, the columns of $U$ are linearly independent — the transpose gives you coordinates for free, with no solving required. Any subspace has an orthonormal basis, obtainable via the Gram-Schmidt algorithm.',
+      ],
+      formalView: [
+        {
+          type: 'definition',
+          label: 'Definition 6.11',
+          title: 'Orthonormal Set',
+          content: 'A set $\\{\\mathbf{u}_1, \\ldots, \\mathbf{u}_n\\} \\subset \\mathbb{R}^m$ is **orthonormal** if $$\\mathbf{u}_i \\cdot \\mathbf{u}_j = \\begin{cases} 1 & i = j \\\\ 0 & i \\neq j \\end{cases}.$$ The $m \\times n$ matrix $U = [\\mathbf{u}_1 \\cdots \\mathbf{u}_n]$ is called a **matrix with orthonormal columns**.',
+        },
+        {
+          type: 'theorem',
+          label: 'Theorem 6.12',
+          content: 'Let $U$ be an $m \\times n$ matrix. Then $U^t U = I_n$ if and only if $U$ has orthonormal columns. In this case, $U^t$ is the left inverse of $U$ and the columns of $U$ are linearly independent.',
+        },
+      ],
+      whyItMatters: {
+        context: 'Orthonormal bases make every computation easier — they remove the need to solve systems to find coordinates.',
+        applications: [
+          'The QR decomposition factors any matrix as $A = QR$ where $Q$ has orthonormal columns — the foundation of stable numerical linear algebra',
+          'Wavelets (used in JPEG 2000 and audio compression) are orthonormal bases for function spaces',
+          'Quantum states are unit vectors and measurement bases are orthonormal — all of quantum computing relies on this structure',
+        ],
+      },
+      resources: [
+        {
+          title: 'Orthonormal bases and Gram-Schmidt',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=uOHalMEAUjk',
+          durationMinutes: 49,
+          description: 'Strang on orthonormal bases, the QR factorization, and the Gram-Schmidt process.',
+        },
+        {
+          title: 'Gram-Schmidt process',
+          channel: 'Khan Academy',
+          url: 'https://www.youtube.com/watch?v=zHbfZWZJTGc',
+          durationMinutes: 15,
+          description: 'Step-by-step Gram-Schmidt to construct an orthonormal basis from any independent set.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-6-q1',
+          type: 'multiple-choice',
+          question: 'If $U$ has orthonormal columns, which identity is guaranteed?',
+          options: ['$UU^t = I$', '$U^t U = I$', '$U^2 = I$', '$U = U^t$'],
+          correctAnswer: 1,
+          explanation: '$U^t U = I$ because the $(i,j)$ entry of $U^t U$ is $\\mathbf{u}_i \\cdot \\mathbf{u}_j$, which equals $\\delta_{ij}$ by orthonormality. The identity $UU^t = I$ only holds when $U$ is square (orthogonal matrix).',
+        },
+        {
+          id: '6-6-q2',
+          type: 'true-false',
+          question: 'An orthonormal set of vectors is always linearly independent.',
+          correctAnswer: true,
+          explanation: 'Since $U^t U = I$, the matrix $U$ has a left inverse and is therefore injective — its columns are linearly independent.',
+        },
+      ],
+      commonMistakes: [
+        'Confusing orthonormal ($\\|\\mathbf{u}_i\\|=1$ and $\\mathbf{u}_i \\perp \\mathbf{u}_j$) with just orthogonal (perpendicular but not necessarily unit length).',
+        'Thinking $U^t U = I$ implies $UU^t = I$ — the latter requires $U$ to be square.',
+        'Confusing the Gram-Schmidt output (orthonormal basis for the same span) with a change of the actual subspace.',
+      ],
+    },
+    {
+      id: '6-7',
+      chapterId: '6',
+      sectionNumber: '6.7',
+      title: 'Weight Finding in an Orthonormal Basis',
+      estimatedMinutes: 8,
+      plainEnglish: [
+        'If $\\{\\mathbf{u}_1, \\ldots, \\mathbf{u}_n\\}$ is an orthonormal basis for a subspace $V$, then any $\\mathbf{v} \\in V$ can be written uniquely as $\\mathbf{v} = c_1 \\mathbf{u}_1 + \\cdots + c_n \\mathbf{u}_n$. Finding the coefficients $c_i$ (the **coordinates** of $\\mathbf{v}$ in this basis) normally requires solving a system of equations.',
+        'With an orthonormal basis, however, there is no solving needed. Taking the dot product of both sides with $\\mathbf{u}_i$ collapses all terms to zero except the $i$-th one: $c_i = \\mathbf{u}_i \\cdot \\mathbf{v}$. In matrix form, the whole coordinate vector is $U^t \\mathbf{v}$.',
+        'This is the key computational advantage of orthonormal bases: finding coordinates is just a matrix-vector multiplication with $U^t$, not a linear system solve. The formula $\\mathbf{v} = U(U^t \\mathbf{v})$ says: "multiply by $U^t$ to get coordinates, then multiply by $U$ to reconstruct $\\mathbf{v}$."',
+      ],
+      formalView: [
+        {
+          type: 'theorem',
+          label: 'Theorem 6.13',
+          title: 'Weight Finding',
+          content: 'Let $\\{\\mathbf{u}_1, \\ldots, \\mathbf{u}_n\\}$ be an orthonormal basis for a subspace $V \\subseteq \\mathbb{R}^m$, and let $U$ be the $m \\times n$ matrix with these columns. For any $\\mathbf{v} \\in V$, the coordinate vector in this basis is $$\\mathbf{v}_U := U^t \\mathbf{v},$$ and $\\mathbf{v} = U \\mathbf{v}_U = U U^t \\mathbf{v}$.',
+          note: 'Proof: let $\\mathbf{v} = \\sum_j c_j \\mathbf{u}_j$. Then $U^t \\mathbf{v} = U^t \\sum_j c_j \\mathbf{u}_j = \\sum_j c_j (U^t \\mathbf{u}_j) = \\sum_j c_j \\mathbf{e}_j = \\mathbf{v}_U$.',
+        },
+      ],
+      whyItMatters: {
+        context: 'Coordinate extraction via the transpose is what makes orthonormal bases so computationally powerful.',
+        applications: [
+          'Fast Fourier Transform computes dot products with complex exponentials to find Fourier coefficients in $O(n \\log n)$',
+          'MRI imaging uses orthonormal wavelets or sines as basis functions and extracts coefficients without solving any systems',
+          'Principal component analysis projects data onto orthonormal principal components via the same formula $U^t \\mathbf{v}$',
+        ],
+      },
+      resources: [
+        {
+          title: 'Projections and orthonormal bases',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=uOHalMEAUjk',
+          durationMinutes: 49,
+          description: 'Strang explains how orthonormal bases make projections and coordinate extraction trivial.',
+        },
+        {
+          title: 'Change of basis',
+          channel: '3Blue1Brown',
+          url: 'https://www.youtube.com/watch?v=P2LTAUO1TdA',
+          durationMinutes: 12,
+          description: 'Visual explanation of coordinates in a new basis and why orthonormal bases are special.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-7-q1',
+          type: 'multiple-choice',
+          question: 'If $U$ has orthonormal columns and $\\mathbf{v} \\in \\text{Col}(U)$, what is $UU^t \\mathbf{v}$?',
+          options: ['$\\mathbf{0}$', '$\\mathbf{v}$', '$U^t \\mathbf{v}$', '$U\\mathbf{v}$'],
+          correctAnswer: 1,
+          explanation: 'Since $\\mathbf{v} \\in \\text{Col}(U)$, we have $\\mathbf{v} = U\\mathbf{c}$ for some $\\mathbf{c}$. Then $UU^t \\mathbf{v} = UU^t U\\mathbf{c} = U(U^tU)\\mathbf{c} = UI\\mathbf{c} = U\\mathbf{c} = \\mathbf{v}$.',
+        },
+        {
+          id: '6-7-q2',
+          type: 'true-false',
+          question: 'For a vector $\\mathbf{v}$ in the column space of $U$ (orthonormal columns), the $i$-th coordinate in the $U$-basis is $\\mathbf{u}_i \\cdot \\mathbf{v}$.',
+          correctAnswer: true,
+          explanation: 'The $i$-th entry of $U^t \\mathbf{v}$ is $\\mathbf{u}_i^t \\mathbf{v} = \\mathbf{u}_i \\cdot \\mathbf{v}$.',
+        },
+      ],
+      commonMistakes: [
+        'Trying to find coordinates by solving $U\\mathbf{c} = \\mathbf{v}$ as a linear system when an orthonormal basis is available — just compute $U^t \\mathbf{v}$.',
+        'Applying the weight-finding formula $U^t \\mathbf{v}$ to a vector $\\mathbf{v}$ not in $\\text{Col}(U)$ and expecting $UU^t\\mathbf{v} = \\mathbf{v}$ — this only works if $\\mathbf{v} \\in \\text{Col}(U)$.',
+      ],
+    },
+    {
+      id: '6-8',
+      chapterId: '6',
+      sectionNumber: '6.8',
+      title: 'Orthogonal Projection',
+      estimatedMinutes: 12,
+      plainEnglish: [
+        'Every vector $\\mathbf{b} \\in \\mathbb{R}^m$ can be split uniquely into two pieces: one piece inside a subspace $V$, and one piece in $V^\\perp$. This decomposition $\\mathbf{b} = \\mathbf{v} + \\mathbf{z}$ (with $\\mathbf{v} \\in V$, $\\mathbf{z} \\in V^\\perp$) is guaranteed to exist and be unique — this is the **Orthogonal Projection Theorem**.',
+        'Given an orthonormal basis $U$ for $V$, the projection is computed as $\\mathbf{v} = UU^t\\mathbf{b}$ (apply weight finding to all of $\\mathbf{b}$, not just vectors in $V$). The perpendicular piece is $\\mathbf{z} = \\mathbf{b} - \\mathbf{v}$. The key fact is that $\\mathbf{z} \\in V^\\perp$: you can verify $U^t \\mathbf{z} = U^t(\\mathbf{b} - UU^t\\mathbf{b}) = U^t\\mathbf{b} - U^t\\mathbf{b} = \\mathbf{0}$.',
+        'The component $\\mathbf{v} = UU^t\\mathbf{b}$ is called the **orthogonal projection** of $\\mathbf{b}$ onto $V$, written $\\text{Proj}_V(\\mathbf{b})$. The matrix $P = UU^t$ is called the **projection matrix** for $V$. Importantly, $P$ does not depend on the choice of orthonormal basis — any orthonormal basis for $V$ gives the same $P$.',
+      ],
+      formalView: [
+        {
+          type: 'theorem',
+          label: 'Theorem 6.14',
+          title: 'Orthogonal Projection Theorem',
+          content: 'Let $V$ be an $n$-dimensional subspace of $\\mathbb{R}^m$. For every $\\mathbf{b} \\in \\mathbb{R}^m$, there is a unique decomposition $\\mathbf{b} = \\mathbf{v} + \\mathbf{z}$ with $\\mathbf{v} \\in V$ and $\\mathbf{z} \\in V^\\perp$.',
+        },
+        {
+          type: 'definition',
+          label: 'Definition 6.15',
+          title: 'Orthogonal Projection',
+          content: 'In the decomposition above, $\\mathbf{v}$ is called the **orthogonal projection** of $\\mathbf{b}$ onto $V$, written $\\text{Proj}_V(\\mathbf{b})$. If $U$ is any matrix with orthonormal columns spanning $V$, then $$\\text{Proj}_V(\\mathbf{b}) = UU^t\\mathbf{b}.$$ The matrix $P = UU^t$ is the **projection matrix** for $V$.',
+          note: 'For the 1D case with $V = \\text{Span}(\\mathbf{a})$: $\\text{Proj}_V(\\mathbf{b}) = \\frac{\\mathbf{b} \\cdot \\mathbf{a}}{\\mathbf{a} \\cdot \\mathbf{a}} \\mathbf{a}$.',
+        },
+      ],
+      diagram: {
+        type: 'OrthogonalProjection2D',
+        props: {},
+      },
+      whyItMatters: {
+        context: 'Orthogonal projection is the mathematical foundation of every "best fit" calculation in science and engineering.',
+        applications: [
+          'Least-squares regression: the best-fit line projects the response vector onto the column space of the design matrix',
+          'Gram-Schmidt orthogonalization is repeated projection: each new vector is projected away from the previous ones',
+          'Computer graphics: projecting 3D objects onto a 2D screen, or a viewpoint onto a surface normal',
+          'Signal denoising: projecting a noisy signal onto the subspace of "smooth" signals removes the high-frequency noise component',
+        ],
+      },
+      resources: [
+        {
+          title: 'Projections onto subspaces',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=Y_Ac6KiQ1t0',
+          durationMinutes: 48,
+          description: 'Strang\'s complete treatment of projection matrices and their properties.',
+        },
+        {
+          title: 'Least squares and projections',
+          channel: '3Blue1Brown',
+          url: 'https://www.youtube.com/watch?v=PjeOmOz9jSY',
+          durationMinutes: 14,
+          description: 'Geometric intuition for why projecting onto the column space gives the best solution.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-8-q1',
+          type: 'multiple-choice',
+          question: 'The projection matrix $P = UU^t$ satisfies $P^2 = ?$',
+          options: ['$I$', '$P$', '$0$', '$U$'],
+          correctAnswer: 1,
+          explanation: '$P^2 = (UU^t)(UU^t) = U(U^tU)U^t = UIU^t = UU^t = P$. Projecting twice is the same as projecting once — you\'re already in $V$ after the first projection.',
+        },
+        {
+          id: '6-8-q2',
+          type: 'true-false',
+          question: 'The orthogonal projection of $\\mathbf{b}$ onto $V$ is always inside $V$.',
+          correctAnswer: true,
+          explanation: 'By definition, $\\text{Proj}_V(\\mathbf{b}) = UU^t\\mathbf{b} = U\\mathbf{c}$ where $\\mathbf{c} = U^t\\mathbf{b}$. Since $U\\mathbf{c}$ is a linear combination of the columns of $U$, it lies in $\\text{Col}(U) = V$.',
+        },
+        {
+          id: '6-8-q3',
+          type: 'multiple-choice',
+          question: 'For a 1D subspace $V = \\text{Span}(\\mathbf{a})$, the projection of $\\mathbf{b}$ onto $V$ is:',
+          options: [
+            '$\\frac{\\mathbf{a} \\cdot \\mathbf{b}}{\\|\\mathbf{b}\\|^2} \\mathbf{a}$',
+            '$\\frac{\\mathbf{a} \\cdot \\mathbf{b}}{\\mathbf{a} \\cdot \\mathbf{a}} \\mathbf{a}$',
+            '$(\\mathbf{a} \\cdot \\mathbf{b})\\mathbf{a}$',
+            '$\\frac{\\mathbf{a}}{\\|\\mathbf{a}\\|}$',
+          ],
+          correctAnswer: 1,
+          explanation: 'Normalizing $\\mathbf{a}$ to $\\hat{\\mathbf{a}} = \\mathbf{a}/\\|\\mathbf{a}\\|$, the projection is $(\\hat{\\mathbf{a}} \\cdot \\mathbf{b})\\hat{\\mathbf{a}} = \\frac{\\mathbf{a} \\cdot \\mathbf{b}}{\\mathbf{a} \\cdot \\mathbf{a}} \\mathbf{a}$.',
+        },
+      ],
+      commonMistakes: [
+        'Computing $UU^t\\mathbf{b}$ for a matrix $U$ whose columns are NOT orthonormal — the formula $\\text{Proj}_V = UU^t$ only works with orthonormal columns.',
+        'Thinking the projection matrix $P = UU^t$ is the identity — $P$ only fixes vectors already in $V$; it sends others to their projection.',
+        'Confusing the projection $\\text{Proj}_V(\\mathbf{b}) \\in V$ with the error $\\mathbf{z} = \\mathbf{b} - \\text{Proj}_V(\\mathbf{b}) \\in V^\\perp$.',
+      ],
+    },
+    {
+      id: '6-9',
+      chapterId: '6',
+      sectionNumber: '6.9',
+      title: 'Best Approximation and Orthogonal Matrices',
+      estimatedMinutes: 10,
+      plainEnglish: [
+        'The orthogonal projection $\\text{Proj}_V(\\mathbf{b})$ is not just any vector in $V$ — it is the **closest** vector in $V$ to $\\mathbf{b}$. This is the Best Approximation Theorem. The proof uses the Pythagorean theorem: for any other $\\mathbf{v}\' \\in V$, the vector $\\mathbf{b} - \\mathbf{v}\'$ has a right-triangle relationship to $\\mathbf{b} - \\text{Proj}_V(\\mathbf{b})$, making the hypotenuse strictly longer.',
+        'When $U$ is a **square** $m \\times m$ matrix with orthonormal columns, it is called an **orthogonal matrix**. In this case, $U^t U = I$ and $U U^t = I$ — the transpose is both the left and right inverse: $U^{-1} = U^t$.',
+        'Orthogonal matrices preserve lengths, distances, and angles. In $\\mathbb{R}^2$ they are exactly rotations and reflections. In $\\mathbb{R}^3$ they are rotations, reflections, and compositions thereof. Every rigid motion of space is represented by an orthogonal matrix.',
+      ],
+      formalView: [
+        {
+          type: 'theorem',
+          label: 'Theorem 6.16',
+          title: 'Best Approximation Theorem',
+          content: 'Let $V$ be a subspace of $\\mathbb{R}^m$ and $\\mathbf{b} \\in \\mathbb{R}^m$. The orthogonal projection $\\mathbf{v} = \\text{Proj}_V(\\mathbf{b})$ is the unique vector in $V$ minimizing distance to $\\mathbf{b}$: $$\\|\\mathbf{b} - \\mathbf{v}\\| < \\|\\mathbf{b} - \\mathbf{v}\'\\| \\quad \\text{for all } \\mathbf{v}\' \\in V,\\, \\mathbf{v}\' \\neq \\mathbf{v}.$$',
+          note: 'Proof sketch: $\\mathbf{b} - \\mathbf{v}\'= (\\mathbf{b} - \\mathbf{v}) + (\\mathbf{v} - \\mathbf{v}\')$. Since $\\mathbf{b} - \\mathbf{v} \\in V^\\perp$ and $\\mathbf{v} - \\mathbf{v}\' \\in V$, the Pythagorean theorem gives $\\|\\mathbf{b}-\\mathbf{v}\'\\|^2 = \\|\\mathbf{b}-\\mathbf{v}\\|^2 + \\|\\mathbf{v}-\\mathbf{v}\'\\|^2 > \\|\\mathbf{b}-\\mathbf{v}\\|^2$.',
+        },
+        {
+          type: 'definition',
+          label: 'Definition 6.17',
+          title: 'Orthogonal Matrix',
+          content: 'A square $m \\times m$ matrix $U$ is **orthogonal** if its columns form an orthonormal basis for $\\mathbb{R}^m$. Equivalently, $U^t U = U U^t = I_m$, so $U^{-1} = U^t$.',
+        },
+        {
+          type: 'theorem',
+          label: 'Theorem 6.18',
+          content: 'If $U$ is an orthogonal matrix, then for all $\\mathbf{u}, \\mathbf{v} \\in \\mathbb{R}^m$: $$\\|U\\mathbf{v}\\| = \\|\\mathbf{v}\\|, \\quad \\text{Dist}(U\\mathbf{u}, U\\mathbf{v}) = \\text{Dist}(\\mathbf{u}, \\mathbf{v}), \\quad (U\\mathbf{u}) \\cdot (U\\mathbf{v}) = \\mathbf{u} \\cdot \\mathbf{v}.$$ Orthogonal matrices are exactly the length-preserving (isometric) linear maps.',
+        },
+      ],
+      diagram: {
+        type: 'OrthogonalProjection2D',
+        props: {},
+      },
+      whyItMatters: {
+        context: 'The best approximation theorem and orthogonal matrices together are the mathematical engine behind least squares, PCA, and all of modern data science.',
+        applications: [
+          'Ordinary least squares regression finds the projection of the response vector onto the column space of the design matrix — the best linear approximation',
+          'Rotation matrices in robotics and 3D graphics are orthogonal — they guarantee no distortion of the object being transformed',
+          'The QR decomposition writes any invertible matrix as $A = QR$, where $Q$ is orthogonal — numerically stable and used in all modern eigenvalue algorithms',
+          'Singular value decomposition expresses every matrix as $A = U \\Sigma V^t$ where $U$ and $V$ are orthogonal — the deepest factorization in linear algebra',
+        ],
+      },
+      resources: [
+        {
+          title: 'Least squares approximations',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=MC7l96tW8V8',
+          durationMinutes: 49,
+          description: 'Strang on least squares, normal equations, and the best approximation theorem.',
+        },
+        {
+          title: 'Orthogonal matrices and Gram-Schmidt',
+          channel: 'MIT OpenCourseWare',
+          url: 'https://www.youtube.com/watch?v=uOHalMEAUjk',
+          durationMinutes: 49,
+          description: 'The QR factorization and orthogonal matrices as the tool for stable computation.',
+        },
+      ],
+      quiz: [
+        {
+          id: '6-9-q1',
+          type: 'true-false',
+          question: 'For an orthogonal matrix $U$, we have $U^{-1} = U^t$.',
+          correctAnswer: true,
+          explanation: 'Since $U^t U = I$ (orthonormal columns) and $U U^t = I$ (square), $U^t$ is both the left and right inverse of $U$, so $U^{-1} = U^t$.',
+        },
+        {
+          id: '6-9-q2',
+          type: 'multiple-choice',
+          question: 'If $P = UU^t$ is a projection matrix onto $V$ and $\\mathbf{b} \\notin V$, which statement is true?',
+          options: [
+            '$P\\mathbf{b}$ is the vector in $V$ furthest from $\\mathbf{b}$',
+            '$P\\mathbf{b}$ is the unique closest vector in $V$ to $\\mathbf{b}$',
+            '$P\\mathbf{b} = \\mathbf{b}$',
+            '$P\\mathbf{b} = \\mathbf{0}$',
+          ],
+          correctAnswer: 1,
+          explanation: 'By the Best Approximation Theorem, $\\text{Proj}_V(\\mathbf{b}) = UU^t\\mathbf{b}$ is the unique minimizer of $\\|\\mathbf{b} - \\mathbf{v}\\|$ over all $\\mathbf{v} \\in V$.',
+        },
+        {
+          id: '6-9-q3',
+          type: 'true-false',
+          question: 'Every orthogonal matrix in $\\mathbb{R}^{2 \\times 2}$ represents either a rotation or a reflection.',
+          correctAnswer: true,
+          explanation: 'In $\\mathbb{R}^2$, the orthogonal matrices with determinant $+1$ are rotations and those with determinant $-1$ are reflections. These are exactly all $2 \\times 2$ orthogonal matrices.',
+        },
+      ],
+      commonMistakes: [
+        'Thinking $P = UU^t$ gives the identity when $U$ is not square — $UU^t = I$ requires $U$ to be a square orthogonal matrix.',
+        'Applying the best approximation result to a non-orthonormal $U$ — the formula $\\text{Proj}_V(\\mathbf{b}) = UU^t\\mathbf{b}$ is ONLY valid when $U$ has orthonormal columns.',
+        'Forgetting that orthogonal matrices preserve the dot product — $(U\\mathbf{u}) \\cdot (U\\mathbf{v}) = \\mathbf{u} \\cdot \\mathbf{v}$, so angles and lengths are unchanged.',
+      ],
+    },
+  ],
+};
+
+export default chapter6;

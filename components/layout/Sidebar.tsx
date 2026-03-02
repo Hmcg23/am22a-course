@@ -14,6 +14,8 @@ const chapterColors: Record<string, string> = {
   '2': 'text-emerald-600 dark:text-emerald-400',
   '3': 'text-violet-600 dark:text-violet-400',
   '4': 'text-rose-600 dark:text-rose-400',
+  '5': 'text-amber-600 dark:text-amber-400',
+  '6': 'text-cyan-600 dark:text-cyan-400',
 };
 
 const chapterBg: Record<string, string> = {
@@ -21,6 +23,8 @@ const chapterBg: Record<string, string> = {
   '2': 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800',
   '3': 'bg-violet-50 dark:bg-violet-950/40 border-violet-200 dark:border-violet-800',
   '4': 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800',
+  '5': 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800',
+  '6': 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800',
 };
 
 function ChapterSection({ chapter, isOpen, onToggle }: {
@@ -37,16 +41,16 @@ function ChapterSection({ chapter, isOpen, onToggle }: {
       <button
         onClick={onToggle}
         className={cn(
-          'w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition-all duration-200',
-          'hover:bg-muted/70 group',
+          'w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-all duration-100',
+          'hover:bg-[var(--bg-hover)] group',
           isOpen && chapterBg[chapter.id]
         )}
       >
         <span className="flex-1 min-w-0">
-          <span className={cn('text-xs font-semibold tracking-wide uppercase', chapterColors[chapter.id])}>
+          <span className={cn('text-xs font-medium tracking-wide uppercase', chapterColors[chapter.id])}>
             Chapter {chapter.id}
           </span>
-          <p className="text-sm font-medium text-foreground truncate mt-0.5 leading-tight">
+          <p className="text-sm font-normal text-foreground truncate mt-0.5 leading-tight">
             {chapter.title}
           </p>
         </span>
@@ -71,10 +75,10 @@ function ChapterSection({ chapter, isOpen, onToggle }: {
                 key={section.id}
                 href={`/chapter/${chapter.id}/${section.id}`}
                 className={cn(
-                  'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-all duration-150',
-                  'hover:bg-muted group',
+                  'flex items-center gap-2 px-2 py-1 rounded text-sm transition-all duration-100',
+                  'hover:bg-[var(--bg-hover)] group',
                   isActive
-                    ? 'bg-primary/10 text-primary font-medium'
+                    ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -114,7 +118,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-72 shrink-0 border-r border-border bg-background/95 backdrop-blur-sm flex flex-col h-screen sticky top-0">
+    <aside className="w-60 shrink-0 border-r border-border bg-sidebar flex flex-col h-screen sticky top-0">
       {/* Header */}
       <div className="px-4 py-5 border-b border-border">
         <Link href="/" className="flex items-center gap-2.5 group">
@@ -122,7 +126,7 @@ export function Sidebar() {
             <BookOpen className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
-            <p className="font-bold text-sm leading-tight">Linear Algebra</p>
+            <p className="font-medium text-sm leading-tight">Linear Algebra</p>
             <p className="text-xs text-muted-foreground">Interactive Course</p>
           </div>
         </Link>

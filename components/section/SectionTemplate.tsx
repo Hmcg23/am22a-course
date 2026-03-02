@@ -25,10 +25,12 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
     '2': 'text-emerald-600 dark:text-emerald-400',
     '3': 'text-violet-600 dark:text-violet-400',
     '4': 'text-rose-600 dark:text-rose-400',
+    '5': 'text-amber-600 dark:text-amber-400',
+    '6': 'text-cyan-600 dark:text-cyan-400',
   };
 
   return (
-    <article className="max-w-3xl mx-auto px-6 py-10">
+    <article className="max-w-[900px] mx-auto px-6 py-10">
       {/* Breadcrumbs */}
       <Breadcrumbs
         items={[
@@ -40,7 +42,7 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
       {/* Header */}
       <header className="mb-10">
         <div className="flex items-center gap-2 mb-2">
-          <span className={`text-xs font-semibold uppercase tracking-widest ${chapterAccent[chapter.id]}`}>
+          <span className={`text-xs font-medium uppercase tracking-widest ${chapterAccent[chapter.id]}`}>
             {section.sectionNumber}
           </span>
           <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -48,7 +50,7 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
             {readingTime(section.estimatedMinutes)}
           </span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground mb-3">
+        <h1 className="text-3xl font-light tracking-tight text-foreground mb-3">
           {section.title}
         </h1>
         <div className="h-1 w-16 rounded-full" style={{ backgroundColor: chapter.accentHex }} />
@@ -72,13 +74,13 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
         {/* 3. Interactive Diagram */}
         {section.diagram && (
           <section>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+            <h3 className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
               <span className="h-px flex-1 bg-border" />
               Interactive Visualization
               <span className="h-px flex-1 bg-border" />
             </h3>
             <Suspense fallback={
-              <div className="h-64 rounded-2xl bg-muted/40 border border-border flex items-center justify-center">
+              <div className="h-64 rounded-lg bg-muted/40 border border-border flex items-center justify-center">
                 <span className="text-sm text-muted-foreground">Loading diagram...</span>
               </div>
             }>
@@ -127,7 +129,7 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
             <ArrowLeft className="h-4 w-4 shrink-0 group-hover:-translate-x-1 transition-transform" />
             <div className="text-right min-w-0">
               <p className="text-xs uppercase tracking-wide mb-0.5">Previous</p>
-              <p className="font-medium truncate">{prevSection.title}</p>
+              <p className="font-normal truncate">{prevSection.title}</p>
             </div>
           </Link>
         ) : <div />}
@@ -139,7 +141,7 @@ export function SectionTemplate({ section, chapter, prevSection, nextSection }: 
           >
             <div className="min-w-0">
               <p className="text-xs uppercase tracking-wide mb-0.5">Next</p>
-              <p className="font-medium truncate">{nextSection.title}</p>
+              <p className="font-normal truncate">{nextSection.title}</p>
             </div>
             <ArrowRight className="h-4 w-4 shrink-0 group-hover:translate-x-1 transition-transform" />
           </Link>

@@ -12,27 +12,31 @@
 
 @layer base {
   :root {
-    /* Warm cream background */
-    --background: 75 25% 97%;
-    --foreground: 150 20% 10%;
+    /* Notion warm white background */
+    --background: 0 0% 100%;
+    --foreground: 45 8% 20%;
+
+    /* Notion off-white sidebar */
+    --sidebar: 60 40% 98%;
 
     /* White cards */
     --card: 0 0% 100%;
-    --card-foreground: 150 20% 10%;
+    --card-foreground: 45 8% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 150 20% 10%;
+    --popover-foreground: 45 8% 20%;
 
     /* Deep forest green as primary */
     --primary: 150 42% 18%;
     --primary-foreground: 75 25% 97%;
 
     /* Light warm secondary */
-    --secondary: 80 20% 93%;
-    --secondary-foreground: 150 20% 10%;
+    --secondary: 45 10% 92%;
+    --secondary-foreground: 45 8% 20%;
 
-    --muted: 80 15% 93%;
-    --muted-foreground: 150 10% 42%;
+    /* Notion warm muted tones */
+    --muted: 45 10% 95%;
+    --muted-foreground: 45 2% 46%;
 
     /* Lime/yellow-green accent */
     --accent: 76 65% 57%;
@@ -41,8 +45,9 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 80 15% 88%;
-    --input: 80 15% 88%;
+    /* Notion warm border */
+    --border: 45 10% 92%;
+    --input: 45 10% 92%;
     --ring: 150 42% 18%;
 
     --chart-1: 150 42% 18%;
@@ -51,30 +56,41 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    --radius: 0.75rem;
+    /* Notion 8px base radius */
+    --radius: 0.5rem;
+
+    /* Notion hover overlay */
+    --bg-hover: rgba(55, 53, 47, 0.08);
+
+    /* Notion elevation shadows */
+    --shadow-el1: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+    --shadow-el2: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.15) 0px 5px 10px, rgba(15, 15, 15, 0.3) 0px 15px 40px;
   }
 
   .dark {
-    /* Very dark forest green background */
-    --background: 150 30% 7%;
-    --foreground: 75 20% 93%;
+    /* Notion dark background */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 83%;
 
-    /* Slightly lighter dark green cards */
-    --card: 150 28% 10%;
-    --card-foreground: 75 20% 93%;
+    /* Notion dark sidebar */
+    --sidebar: 0 0% 13%;
 
-    --popover: 150 28% 10%;
-    --popover-foreground: 75 20% 93%;
+    /* Darker cards */
+    --card: 0 0% 13%;
+    --card-foreground: 0 0% 83%;
+
+    --popover: 0 0% 13%;
+    --popover-foreground: 0 0% 83%;
 
     /* Lime as primary in dark mode */
     --primary: 76 65% 55%;
     --primary-foreground: 150 42% 10%;
 
-    --secondary: 150 25% 15%;
-    --secondary-foreground: 75 20% 93%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 83%;
 
-    --muted: 150 22% 14%;
-    --muted-foreground: 150 10% 55%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 61%;
 
     /* Lime accent stays consistent */
     --accent: 76 65% 55%;
@@ -83,8 +99,9 @@
     --destructive: 0 63% 38%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 150 22% 18%;
-    --input: 150 22% 18%;
+    /* Notion dark border */
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
     --ring: 76 65% 55%;
 
     --chart-1: 76 65% 55%;
@@ -92,6 +109,13 @@
     --chart-3: 32 95% 55%;
     --chart-4: 280 65% 65%;
     --chart-5: 340 75% 60%;
+
+    /* Notion dark hover overlay */
+    --bg-hover: rgba(255, 255, 255, 0.055);
+
+    /* Notion dark elevation shadows */
+    --shadow-el1: rgba(15, 15, 15, 0.3) 0px 0px 0px 1px, rgba(15, 15, 15, 0.4) 0px 3px 6px, rgba(15, 15, 15, 0.5) 0px 9px 24px;
+    --shadow-el2: rgba(15, 15, 15, 0.4) 0px 0px 0px 1px, rgba(15, 15, 15, 0.5) 0px 5px 10px, rgba(15, 15, 15, 0.6) 0px 15px 40px;
   }
 }
 
@@ -100,12 +124,9 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-
-  /* Headings use the editorial serif font */
-  h1, h2, h3 {
-    font-family: var(--font-playfair), Georgia, serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-weight: 400;
   }
 }
 
@@ -120,7 +141,7 @@
 
 /* Diagram containers */
 .diagram-container {
-  @apply rounded-2xl border border-border bg-card overflow-hidden;
+  @apply rounded-lg border border-border bg-card overflow-hidden;
 }
 
 /* Prose content */
@@ -129,5 +150,5 @@
 }
 
 .prose-math strong {
-  @apply font-semibold text-foreground;
+  @apply font-medium text-foreground;
 }

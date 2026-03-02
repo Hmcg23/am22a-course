@@ -17,6 +17,9 @@ const MatrixProductAnimator = dynamic(() => import('./chapter4/MatrixProductAnim
 const InvertibleTheoremExplorer = dynamic(() => import('./chapter4/InvertibleTheoremExplorer'), { ssr: false });
 const LUDecompositionAnimator = dynamic(() => import('./chapter4/LUDecompositionAnimator'), { ssr: false });
 const TransformationComposition = dynamic(() => import('./chapter4/TransformationComposition'), { ssr: false });
+const TransposeVisualizer = dynamic(() => import('./chapter5/TransposeVisualizer'), { ssr: false });
+const DotProductAngle = dynamic(() => import('./chapter6/DotProductAngle'), { ssr: false });
+const OrthogonalProjection2D = dynamic(() => import('./chapter6/OrthogonalProjection2D'), { ssr: false });
 
 function DiagramShell({ children, title }: { children: React.ReactNode; title?: string }) {
   return (
@@ -72,6 +75,12 @@ export function DiagramRegistry({ config }: { config: DiagramConfig }) {
       return wrapDiagram(LUDecompositionAnimator, config.props, 'LU Decomposition Animator');
     case 'TransformationComposition':
       return wrapDiagram(TransformationComposition, config.props, 'Composition: v → Bv → A(Bv)');
+    case 'TransposeVisualizer':
+      return wrapDiagram(TransposeVisualizer, config.props, 'Transpose Visualizer');
+    case 'DotProductAngle':
+      return wrapDiagram(DotProductAngle, config.props, 'Dot Product and Angle');
+    case 'OrthogonalProjection2D':
+      return wrapDiagram(OrthogonalProjection2D, config.props, 'Orthogonal Projection');
     default:
       return null;
   }

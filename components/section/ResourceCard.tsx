@@ -13,7 +13,7 @@ function ResourceCardItem({ resource }: { resource: ResourceCardType }) {
         <Youtube className="h-5 w-5 text-red-500" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors leading-tight mb-0.5">
+        <p className="text-sm font-normal text-foreground group-hover:text-primary transition-colors leading-tight mb-0.5">
           {resource.title}
         </p>
         <p className="text-xs text-muted-foreground mb-1">{resource.channel}</p>
@@ -31,7 +31,7 @@ function ResourceCardItem({ resource }: { resource: ResourceCardType }) {
 export function ResourceCards({ resources }: { resources: ResourceCardType[] }) {
   return (
     <div>
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+      <h3 className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         <span className="h-px flex-1 bg-border" />
         Learning Resources
         <span className="h-px flex-1 bg-border" />

@@ -3,14 +3,16 @@ import chapter1 from './chapter1';
 import chapter2 from './chapter2';
 import chapter3 from './chapter3';
 import chapter4 from './chapter4';
+import chapter5 from './chapter5';
+import chapter6 from './chapter6';
 
 export const courseStructure: CourseStructure = {
   title: 'Linear Algebra',
   subtitle: 'An Interactive Journey from Equations to Structure',
-  chapters: [chapter1, chapter2, chapter3, chapter4],
+  chapters: [chapter1, chapter2, chapter3, chapter4, chapter5, chapter6],
 };
 
-export { chapter1, chapter2, chapter3, chapter4 };
+export { chapter1, chapter2, chapter3, chapter4, chapter5, chapter6 };
 
 export function getSectionById(sectionId: string) {
   for (const chapter of courseStructure.chapters) {

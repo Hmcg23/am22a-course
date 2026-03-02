@@ -22,6 +22,8 @@ const chapterColors: Record<string, { text: string; bg: string; border: string; 
   '2': { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-800', accent: '#10B981' },
   '3': { text: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-200 dark:border-violet-800', accent: '#8B5CF6' },
   '4': { text: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-200 dark:border-rose-800', accent: '#F43F5E' },
+  '5': { text: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-200 dark:border-amber-800', accent: '#F59E0B' },
+  '6': { text: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-200 dark:border-cyan-800', accent: '#06B6D4' },
 };
 
 export default function ChapterPage({ params }: { params: { chapterId: string } }) {
@@ -32,7 +34,7 @@ export default function ChapterPage({ params }: { params: { chapterId: string } 
   const totalMinutes = chapter.sections.reduce((s, sec) => s + sec.estimatedMinutes, 0);
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10">
+    <div className="max-w-[900px] mx-auto px-6 py-10">
       {/* Chapter header */}
       <div className="mb-10">
         <span className={`text-xs font-semibold uppercase tracking-widest ${colors.text} mb-2 block`}>
@@ -59,7 +61,7 @@ export default function ChapterPage({ params }: { params: { chapterId: string } 
           <Link
             key={section.id}
             href={`/chapter/${chapter.id}/${section.id}`}
-            className={`group flex items-center gap-4 p-4 rounded-2xl border ${colors.border} bg-card hover:bg-muted/40 transition-all`}
+            className={`group flex items-center gap-4 p-4 rounded-lg border ${colors.border} bg-card hover:bg-[var(--bg-hover)] transition-all duration-100`}
           >
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white shrink-0"
@@ -86,7 +88,7 @@ export default function ChapterPage({ params }: { params: { chapterId: string } 
       <div className="mt-10 text-center">
         <Link
           href={`/chapter/${chapter.id}/${chapter.sections[0].id}`}
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
         >
           Start Chapter {chapter.id}
           <ArrowRight className="h-4 w-4" />
