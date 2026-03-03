@@ -2,8 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, CheckCircle2, Circle } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ChevronDown, ChevronRight, BookOpen, CheckCircle2, Circle, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { courseStructure } from '@/data/courseStructure';
 import { useProgress } from '@/hooks/useProgress';
@@ -39,10 +38,11 @@ function ChapterSection({ chapter, isOpen, onToggle }: {
   return (
     <div className="mb-1">
       <button
+        type="button"
         onClick={onToggle}
         className={cn(
           'w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-all duration-100',
-          'hover:bg-[var(--bg-hover)] group',
+          'hover:bg-[var(--bg-hover)]',
           isOpen && chapterBg[chapter.id]
         )}
       >
@@ -75,22 +75,20 @@ function ChapterSection({ chapter, isOpen, onToggle }: {
                 key={section.id}
                 href={`/chapter/${chapter.id}/${section.id}`}
                 className={cn(
-                  'flex items-center gap-2 px-2 py-1 rounded text-sm transition-all duration-100',
-                  'hover:bg-[var(--bg-hover)] group',
+                  'w-full flex items-start gap-2 px-2 py-1 rounded text-sm transition-all duration-100',
+                  'hover:bg-[var(--bg-hover)]',
                   isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {isDone ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" />
                 ) : (
-                  <Circle className={cn('h-3.5 w-3.5 shrink-0', isActive ? 'text-primary' : 'text-muted-foreground/40')} />
+                  <Circle className={cn('h-3.5 w-3.5 shrink-0 mt-0.5', isActive ? 'text-primary' : 'text-muted-foreground/40')} />
                 )}
-                <span className="flex-1 min-w-0">
-                  <span className="font-mono text-xs text-muted-foreground mr-1.5">{section.sectionNumber}</span>
-                  <span className="truncate">{section.title}</span>
-                </span>
+                <span className="font-mono text-xs text-muted-foreground shrink-0 pt-px">{section.sectionNumber}</span>
+                <span className="leading-snug break-words min-w-0 flex-1">{section.title}</span>
               </Link>
             );
           })}
@@ -103,6 +101,7 @@ function ChapterSection({ chapter, isOpen, onToggle }: {
 export function Sidebar() {
   const pathname = usePathname();
   const currentChapterId = pathname.split('/')[2];
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const [openChapters, setOpenChapters] = useState<Set<string>>(() => {
     return new Set(currentChapterId ? [currentChapterId] : ['1']);
@@ -118,33 +117,62 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-60 shrink-0 border-r border-border bg-sidebar flex flex-col h-screen sticky top-0">
-      {/* Header */}
-      <div className="px-4 py-5 border-b border-border">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <BookOpen className="h-4 w-4 text-primary-foreground" />
+    <>
+      <aside
+        className={cn(
+          'shrink-0 border-r border-border bg-sidebar flex flex-col h-screen sticky top-0 transition-[width] duration-200 overflow-hidden',
+          sidebarOpen ? 'w-72' : 'w-0 border-r-0'
+        )}
+      >
+        <div className="w-72 flex flex-col h-full">
+          {/* Header */}
+          <div className="px-4 py-[13px] border-b border-border flex items-center justify-between shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 group min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+                <BookOpen className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-medium text-sm leading-tight">Linear Algebra</p>
+                <p className="text-xs text-muted-foreground">Interactive Course</p>
+              </div>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 rounded hover:bg-[var(--bg-hover)] text-muted-foreground hover:text-foreground transition-colors shrink-0 ml-2"
+              aria-label="Collapse sidebar"
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </button>
           </div>
-          <div>
-            <p className="font-medium text-sm leading-tight">Linear Algebra</p>
-            <p className="text-xs text-muted-foreground">Interactive Course</p>
-          </div>
-        </Link>
-      </div>
 
-      {/* Navigation */}
-      <ScrollArea className="flex-1 px-3 py-4">
-        <div className="space-y-0.5">
-          {courseStructure.chapters.map((chapter) => (
-            <ChapterSection
-              key={chapter.id}
-              chapter={chapter}
-              isOpen={openChapters.has(chapter.id)}
-              onToggle={() => toggleChapter(chapter.id)}
-            />
-          ))}
+          {/* Navigation — plain overflow-y-auto avoids ScrollArea viewport width quirks */}
+          <div className="flex-1 overflow-y-auto px-3 py-4 min-h-0">
+            <div className="space-y-0.5">
+              {courseStructure.chapters.map((chapter) => (
+                <ChapterSection
+                  key={chapter.id}
+                  chapter={chapter}
+                  isOpen={openChapters.has(chapter.id)}
+                  onToggle={() => toggleChapter(chapter.id)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </ScrollArea>
-    </aside>
+      </aside>
+
+      {/* Expand button shown when sidebar is collapsed */}
+      {!sidebarOpen && (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="fixed left-3 top-3 z-50 p-1.5 rounded-lg bg-sidebar border border-border text-muted-foreground hover:text-foreground hover:bg-[var(--bg-hover)] transition-colors shadow-el1"
+          aria-label="Expand sidebar"
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </button>
+      )}
+    </>
   );
 }
